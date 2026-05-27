@@ -54,7 +54,7 @@ def handle_buttons(message):
                 "🆔 **Telegram ID -** `{user_id}`\n\n"
                 "⚠️ **ညွှန်ကြားချက် -**\n"
                 "အပေါ်က Password နှင့် Telegram ID အား ကူးယူ (Copy) ပြီး၊ "
-                "**ငွေလွှဲပြေစာ (Screenshot)** နှင့်အတူ Admin ထံသို့ ပေးပို့၍ ရက်သတ်မှတ်ခိုင်းပါဗျာ।"
+                "**ငွေလွှဲပြေစာ (Screenshot)** နှင့်အတူ Admin ထံသို့ ပေးပို့၍ ရက်သတ်မှတ်ခိုင်းပါဗျာ။"
             ).format(password=generated_password, user_id=user_id)
             
             inline_markup = types.InlineKeyboardMarkup()
@@ -86,4 +86,3 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-    
