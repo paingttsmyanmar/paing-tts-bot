@@ -17,15 +17,20 @@ bot = TeleBot(BOT_TOKEN)
 def welcome_message(message):
     # --- ၁။ User က Bot ရဲ့ Private Chat ထဲမှာ လာနှိပ်တာဆိုလျှင် ---
     if message.chat.type == 'private':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn_get_pass = types.KeyboardButton("🔑 Password ယူရန်")
-        btn_web_link = types.KeyboardButton("🌐 ဆာဗာ Link")
-        markup.add(btn_get_pass, btn_web_link)
+        inline_markup = types.InlineKeyboardMarkup(row_width=1)
         
-        welcome_text = "👋 ဝင်ရောက်လာမှုကို ကြိုဆိုပါတယ်ဗျာ။ အသုံးပြုရန် အောက်ပါခလုတ်များမှတစ်ဆင့် ရွေးချယ်နိုင်ပါပြီ။ 👇"
-        bot.send_message(message.chat.id, welcome_text, reply_markup=markup)
+        # 🔑 PASSWORD ရယူရန် ခလုတ်
+        btn_get_pass = types.InlineKeyboardButton("🔑 PASSWORD ရယူရန်", callback_data="get_password_now")
         
-    # --- ၂။ Group ထဲမှာ /start လာနှိပ်တာဆိုလျှင် (PIN တင်ရန်အတွက် စာသားနှင့် ခလုတ်ထုတ်ပေးမည်) ---
+        # 🆓 FREE သုံးရန် ခလုတ် (နှိပ်လိုက်တာနဲ့ စာလုံးရေ ၂၀၀၀ ကန့်သတ်ချက်ရှိတဲ့ ဝဘ်ဆိုက်ဆီ တန်းခေါ်သွားမည်)
+        btn_free_server = types.InlineKeyboardButton("🆓 FREE အစမ်းသုံးရန် (စာလုံးရေ ၂၀၀၀ ကန့်သတ်ချက်)", url="https://paingttsmyanmar.onrender.com")
+        
+        inline_markup.add(btn_get_pass, btn_free_server)
+        
+        welcome_text = "📢 **Myanmar TTS SRT App မှ ကြိုဆိုပါတယ်ဗျာ။**\nအောက်ပါခလုတ်များမှတစ်ဆင့် သင်အသုံးပြုလိုသော စနစ်ကို ရွေးချယ်ပါ 👇"
+        bot.send_message(message.chat.id, welcome_text, parse_mode="Markdown", reply_markup=inline_markup)
+        
+    # --- ၂။ Group ထဲမှာ /start လာနှိပ်တာဆိုလျှင် ---
     else:
         inline_markup = types.InlineKeyboardMarkup()
         btn_go_private = types.InlineKeyboardButton("🔑 ဤနေရာကိုနှိပ်၍ သီးသန့် Password ယူပါ", url=f"https://t.me/{BOT_USERNAME}?start=get_password")
@@ -38,37 +43,28 @@ def welcome_message(message):
         bot.send_message(message.chat.id, group_text, parse_mode="Markdown", reply_markup=inline_markup)
 
 # =========================================================
-# ⌨️ ခလုတ်တစ်ခုချင်းစီ၏ အလုပ်လုပ်ပုံများ (Private တွင်သာ အလုပ်လုပ်မည်)
+# 🎛️ Inline Button (PASSWORD ရယူရန်) ကို နှိပ်ခဲ့လျှင်
 # =========================================================
-@bot.message_handler(func=lambda message: True)
-def handle_buttons(message):
-    if message.chat.type == 'private':
-        user_id = message.chat.id
-        
-        if message.text == "🔑 Password ယူရန်":
-            generated_password = random.randint(100000, 999999)
-            
-            info_text = (
-                "🎫 **သင်၏ ဆော့ဖ်ဝဲလ်ဝင်ခွင့် အချက်အလက်များ** 🎫\n\n"
-                "🔑 **ဝင်ခွင့် Password -** `{password}`\n"
-                "🆔 **Telegram ID -** `{user_id}`\n\n"
-                "⚠️ **ညွှန်ကြားချက် -**\n"
-                "အပေါ်က Password နှင့် Telegram ID အား ကူးယူ (Copy) ပြီး၊ "
-                "**ငွေလွှဲပြေစာ (Screenshot)** နှင့်အတူ Admin ထံသို့ ပေးပို့၍ ရက်သတ်မှတ်ခိုင်းပါဗျာ။"
-            ).format(password=generated_password, user_id=user_id)
-            
-            inline_markup = types.InlineKeyboardMarkup()
-            inline_btn = types.InlineKeyboardButton("🔥 Admin ထံသို့ အချက်အလက်နှင့် ပြေစာပို့ရန်", url=f"https://t.me/{ADMIN_USERNAME}")
-            inline_markup.add(inline_btn)
-            
-            bot.send_message(message.chat.id, info_text, parse_mode="Markdown", reply_markup=inline_markup)
-
-        elif message.text == "🌐 ဆာဗာ Link":
-            inline_markup = types.InlineKeyboardMarkup()
-            inline_btn = types.InlineKeyboardButton("🚀 Web App ကို ဖွင့်မည်", url="https://paingttsmyanmar.onrender.com")
-            inline_markup.add(inline_btn)
-            
-            bot.send_message(message.chat.id, "အောက်ကခလုတ်ကိုနှိပ်ပြီး App ထဲသို့ ဝင်ရောက်နိုင်ပါတယ်ဗျာ။ 👇", reply_markup=inline_markup)
+@bot.callback_query_handler(func=lambda call: call.data == "get_password_now")
+def callback_inline(call):
+    user_id = call.message.chat.id
+    generated_password = random.randint(100000, 999999)
+    
+    info_text = (
+        "🎫 **သင်၏ ဆော့ဖ်ဝဲလ်ဝင်ခွင့် အချက်အလက်များ** 🎫\n\n"
+        "🔑 **ဝင်ခွင့် Password -** `{password}`\n"
+        "🆔 **Telegram ID -** `{user_id}`\n\n"
+        "⚠️ **ညွှန်ကြားချက် -**\n"
+        "အပေါ်က Password နှင့် Telegram ID အား ကူးယူ (Copy) ပြီး၊ "
+        "**ငွေလွှဲပြေစာ (Screenshot)** နှင့်အတူ Admin ထံသို့ ပေးပို့၍ ရက်သတ်မှတ်ခိုင်းပါဗျာ။"
+    ).format(password=generated_password, user_id=user_id)
+    
+    inline_markup = types.InlineKeyboardMarkup()
+    inline_btn = types.InlineKeyboardButton("🔥 Admin ထံသို့ အချက်အလက်နှင့် ပြေစာပို့ရန်", url=f"https://t.me/{ADMIN_USERNAME}")
+    inline_markup.add(inline_btn)
+    
+    bot.send_message(user_id, info_text, parse_mode="Markdown", reply_markup=inline_markup)
+    bot.answer_callback_query(call.id)
 
 # =========================================================
 # 🌐 Web Server မောင်းနှင်ခြင်း
@@ -86,3 +82,4 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+        
