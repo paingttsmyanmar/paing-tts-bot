@@ -17,7 +17,6 @@ bot = TeleBot(BOT_TOKEN)
 def welcome_message(message):
     # --- ၁။ User က Bot ရဲ့ Private Chat ထဲမှာ လာနှိပ်တာဆိုလျှင် ---
     if message.chat.type == 'private':
-        # အောက်ခြေတွင် အမြဲပေါ်နေမည့် ခလုတ်ကြီး (၂) ခု
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn_get_pass = types.KeyboardButton("🔑 Password ယူရန်")
         btn_web_link = types.KeyboardButton("🌐 ဆာဗာ Link")
@@ -29,7 +28,6 @@ def welcome_message(message):
     # --- ၂။ Group ထဲမှာ /start လာနှိပ်တာဆိုလျှင် (PIN တင်ရန်အတွက် စာသားနှင့် ခလုတ်ထုတ်ပေးမည်) ---
     else:
         inline_markup = types.InlineKeyboardMarkup()
-        # 🚨 နှိပ်လိုက်သည်နှင့် Bot ၏ Private Chat (Inbox) သို့ ချက်ချင်း ခေါ်သွားပေးမည့် ခလုတ်
         btn_go_private = types.InlineKeyboardButton("🔑 ဤနေရာကိုနှိပ်၍ သီးသန့် Password ယူပါ", url=f"https://t.me/{BOT_USERNAME}?start=get_password")
         inline_markup.add(btn_go_private)
         
@@ -47,7 +45,6 @@ def handle_buttons(message):
     if message.chat.type == 'private':
         user_id = message.chat.id
         
-        # --- '🔑 Password ယူရန်' ခလုတ်နှိပ်လျှင် ---
         if message.text == "🔑 Password ယူရန်":
             generated_password = random.randint(100000, 999999)
             
@@ -57,7 +54,7 @@ def handle_buttons(message):
                 "🆔 **Telegram ID -** `{user_id}`\n\n"
                 "⚠️ **ညွှန်ကြားချက် -**\n"
                 "အပေါ်က Password နှင့် Telegram ID အား ကူးယူ (Copy) ပြီး၊ "
-                "**ငွေလွှဲပြေစာ (Screenshot)** နှင့်အတူ Admin ထံသို့ ပေးပို့၍ ရက်သတ်မှတ်ခိုင်းပါဗျာ။"
+                "**ငွေလွှဲပြေစာ (Screenshot)** နှင့်အတူ Admin ထံသို့ ပေးပို့၍ ရက်သတ်မှတ်ခိုင်းပါဗျာ।"
             ).format(password=generated_password, user_id=user_id)
             
             inline_markup = types.InlineKeyboardMarkup()
@@ -66,7 +63,6 @@ def handle_buttons(message):
             
             bot.send_message(message.chat.id, info_text, parse_mode="Markdown", reply_markup=inline_markup)
 
-        # --- '🌐 ဆာဗာ Link' ခလုတ်နှိပ်လျှင် ---
         elif message.text == "🌐 ဆာဗာ Link":
             inline_markup = types.InlineKeyboardMarkup()
             inline_btn = types.InlineKeyboardButton("🚀 Web App ကို ဖွင့်မည်", url="https://paingttsmyanmar.onrender.com")
@@ -90,4 +86,4 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-        
+    
