@@ -6,7 +6,7 @@ from telebot import TeleBot, types
 # =========================================================
 BOT_TOKEN = "8547879121:AAE9zdWx5deE5VnhXp9k1yX_kfNh_dnClJc"
 ADMIN_USERNAME = "trollmovie123"  # သင့် Telegram Username
-BOT_USERNAME = "paing_tts_srt_bot"  # သင့် Bot ၏ Username (ရှေ့က @ မပါဘဲ)
+BOT_USERNAME = "paing_tts_srt_bot"  # သင့် Bot ၏ Username
 
 bot = TeleBot(BOT_TOKEN)
 
@@ -22,12 +22,16 @@ def welcome_message(message):
         # 🔑 PASSWORD ရယူရန် ခလုတ်
         btn_get_pass = types.InlineKeyboardButton("🔑 PASSWORD ရယူရန်", callback_data="get_password_now")
         
-        # 🆓 FREE သုံးရန် ခလုတ် (နှိပ်လိုက်တာနဲ့ စာလုံးရေ ၂၀၀၀ ကန့်သတ်ချက်ရှိတဲ့ ဝဘ်ဆိုက်ဆီ တန်းခေါ်သွားမည်)
+        # 🚀 Premium Server သို့ဝင်ရန် ခလုတ်
+        btn_premium_server = types.InlineKeyboardButton("🚀 Premium Server သို့ဝင်ရန်", url="https://paingttsmyanmar.onrender.com")
+        
+        # 🆓 FREE အစမ်းသုံးရန် ခလုတ် (စာလုံးရေ ၂၀၀၀ ကန့်သတ်ချက်နေရာသို့ တိုက်ရိုက်သွားမည်)
         btn_free_server = types.InlineKeyboardButton("🆓 FREE အစမ်းသုံးရန် (စာလုံးရေ ၂၀၀၀ ကန့်သတ်ချက်)", url="https://paingttsmyanmar.onrender.com")
         
-        inline_markup.add(btn_get_pass, btn_free_server)
+        inline_markup.add(btn_get_pass, btn_premium_server, btn_free_server)
         
-        welcome_text = "📢 **Myanmar TTS SRT App မှ ကြိုဆိုပါတယ်ဗျာ။**\nအောက်ပါခလုတ်များမှတစ်ဆင့် သင်အသုံးပြုလိုသော စနစ်ကို ရွေးချယ်ပါ 👇"
+        # ခေါင်းစဉ်ကို မင်းဖြစ်ချင်တဲ့အတိုင်း "paing Myanmar TTS and SRT" ဟု ပြင်ထားပါသည်
+        welcome_text = "📢 **paing Myanmar TTS and SRT မှ ကြိုဆိုပါတယ်ဗျာ။**\nအောက်ပါခလုတ်များမှတစ်ဆင့် သင်အသုံးပြုလိုသော စနစ်ကို ရွေးချယ်ပါ 👇"
         bot.send_message(message.chat.id, welcome_text, parse_mode="Markdown", reply_markup=inline_markup)
         
     # --- ၂။ Group ထဲမှာ /start လာနှိပ်တာဆိုလျှင် ---
@@ -37,7 +41,7 @@ def welcome_message(message):
         inline_markup.add(btn_go_private)
         
         group_text = (
-            "👑 **Myanmar TTS & SRT Premium Service** 👑\n\n"
+            "👑 **paing Myanmar TTS and SRT Premium Service** 👑\n\n"
             "ဆော့ဖ်ဝဲလ် အသုံးပြုရန်အတွက် အောက်ပါခလုတ်ကိုနှိပ်၍ **Bot ၏ Inbox (သီးသန့် Chat) တွင်** Password ကို လုံခြုံစွာ ရယူနိုင်ပါပြီဗျာ။ 👇"
         )
         bot.send_message(message.chat.id, group_text, parse_mode="Markdown", reply_markup=inline_markup)
@@ -82,4 +86,4 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-        
+    
