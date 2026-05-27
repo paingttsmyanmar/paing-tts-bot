@@ -5,8 +5,8 @@ from telebot import TeleBot, types
 # ⚙️ Configuration
 # =========================================================
 BOT_TOKEN = "8547879121:AAE9zdWx5deE5VnhXp9k1yX_kfNh_dnClJc"
-ADMIN_USERNAME = "trollmovie123"  # သင့် Telegram Username
-BOT_USERNAME = "paing_tts_srt_bot"  # သင့် Bot ၏ Username
+ADMIN_USERNAME = "trollmovie123"
+BOT_USERNAME = "paing_tts_srt_bot"
 
 bot = TeleBot(BOT_TOKEN)
 
@@ -15,26 +15,17 @@ bot = TeleBot(BOT_TOKEN)
 # =========================================================
 @bot.message_handler(commands=['start'])
 def welcome_message(message):
-    # --- ၁။ User က Bot ရဲ့ Private Chat ထဲမှာ လာနှိပ်တာဆိုလျှင် ---
     if message.chat.type == 'private':
         inline_markup = types.InlineKeyboardMarkup(row_width=1)
         
-        # 🔑 PASSWORD ရယူရန် ခလုတ်
         btn_get_pass = types.InlineKeyboardButton("🔑 PASSWORD ရယူရန်", callback_data="get_password_now")
-        
-        # 🚀 Premium Server သို့ဝင်ရန် ခလုတ်
         btn_premium_server = types.InlineKeyboardButton("🚀 Premium Server သို့ဝင်ရန်", url="https://paingttsmyanmar.onrender.com")
-        
-        # 🆓 FREE အစမ်းသုံးရန် ခလုတ် (စာလုံးရေ ၂၀၀၀ ကန့်သတ်ချက်နေရာသို့ တိုက်ရိုက်သွားမည်)
         btn_free_server = types.InlineKeyboardButton("🆓 FREE အစမ်းသုံးရန် (စာလုံးရေ ၂၀၀၀ ကန့်သတ်ချက်)", url="https://paingttsmyanmar.onrender.com")
         
         inline_markup.add(btn_get_pass, btn_premium_server, btn_free_server)
         
-        # ခေါင်းစဉ်ကို မင်းဖြစ်ချင်တဲ့အတိုင်း "paing Myanmar TTS and SRT" ဟု ပြင်ထားပါသည်
         welcome_text = "📢 **paing Myanmar TTS and SRT မှ ကြိုဆိုပါတယ်ဗျာ။**\nအောက်ပါခလုတ်များမှတစ်ဆင့် သင်အသုံးပြုလိုသော စနစ်ကို ရွေးချယ်ပါ 👇"
         bot.send_message(message.chat.id, welcome_text, parse_mode="Markdown", reply_markup=inline_markup)
-        
-    # --- ၂။ Group ထဲမှာ /start လာနှိပ်တာဆိုလျှင် ---
     else:
         inline_markup = types.InlineKeyboardMarkup()
         btn_go_private = types.InlineKeyboardButton("🔑 ဤနေရာကိုနှိပ်၍ သီးသန့် Password ယူပါ", url=f"https://t.me/{BOT_USERNAME}?start=get_password")
@@ -86,4 +77,5 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+    
     
