@@ -5,10 +5,35 @@ from telebot import TeleBot, types
 # ⚙️ Configuration
 # =========================================================
 BOT_TOKEN = "8547879121:AAE9zdWx5deE5VnhXp9k1yX_kfNh_dnClJc"
-ADMIN_USERNAME = "trollmovie123"
-BOT_USERNAME = "paing_tts_srt_bot"
+ADMIN_USERNAME = "trollmovie123"  # သင့် Telegram Username
+BOT_USERNAME = "paing_tts_srt_bot"  # သင့် Bot ၏ Username
 
 bot = TeleBot(BOT_TOKEN)
+
+# =========================================================
+# 🎉 လူသစ်ဝင်လာလျှင် အလိုအလျောက် ကြိုဆိုသည့်စနစ် (Welcome Message)
+# =========================================================
+@bot.message_handler(content_types=['new_chat_members'])
+def welcome_new_member(message):
+    for new_member in message.new_chat_members:
+        # Bot ကိုယ်တိုင် Group ထဲဝင်လာတာဆိုရင် စာမပို့အောင် ကျော်ရန်
+        if new_member.username == BOT_USERNAME:
+            continue
+            
+        # လူသစ်၏ နာမည်ကို ရယူခြင်း
+        first_name = new_member.first_name
+        
+        # မင်းဖြစ်ချင်တဲ့ ကြိုဆိုတဲ့ စာတန်းအလှလေး
+        welcome_text = (
+            "👋 **မင်္ဂလာပါ ဆရာ {name} ရေ...**\n"
+            "**paing Myanmar TTS and SRT** Group ထဲသို့ ဝင်ရောက်လာမှုကို လှိုက်လှိုက်လှဲလှဲ ကြိုဆိုပါတယ်ဗျာ။ ✨\n\n"
+            "🎙️ အသံဖန်တီးခြင်းနှင့် SRT စာတန်းထိုး ထုတ်ယူလိုပါက... "
+            "**ယခု Group ရဲ့ အပေါ်ဆုံးမှာ Pin တင်ထားတဲ့ အပြာရောင်ကွက်လေး (ခလုတ် Banner) ကို နှိပ်ပြီး** "
+            "လုံုံခြုံစွာ အသုံးပြုနိုင်ပါပြီဗျာ။ 🚀🔥"
+        ).format(name=first_name)
+        
+        # Group ထဲသို့ စာလှမ်းပို့ခြင်း
+        bot.send_message(message.chat.id, welcome_text, parse_mode="Markdown")
 
 # =========================================================
 # 💬 Start ခလုတ်နှိပ်လျှင် (Private နှင့် Group ခွဲခြားခြင်း)
@@ -26,6 +51,7 @@ def welcome_message(message):
         
         welcome_text = "📢 **paing Myanmar TTS and SRT မှ ကြိုဆိုပါတယ်ဗျာ။**\nအောက်ပါခလုတ်များမှတစ်ဆင့် သင်အသုံးပြုလိုသော စနစ်ကို ရွေးချယ်ပါ 👇"
         bot.send_message(message.chat.id, welcome_text, parse_mode="Markdown", reply_markup=inline_markup)
+        
     else:
         inline_markup = types.InlineKeyboardMarkup()
         btn_go_private = types.InlineKeyboardButton("🔑 ဤနေရာကိုနှိပ်၍ သီးသန့် Password ယူပါ", url=f"https://t.me/{BOT_USERNAME}?start=get_password")
@@ -77,5 +103,4 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-    
     
