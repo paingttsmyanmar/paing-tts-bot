@@ -11,35 +11,32 @@ BOT_USERNAME = "paing_tts_srt_bot"  # သင့် Bot ၏ Username
 bot = TeleBot(BOT_TOKEN)
 
 # =========================================================
-# 🎉 လူသစ်ဝင်လာလျှင် အလိုအလျောက် ကြိုဆိုသည့်စနစ် (Welcome Message)
+# 🎉 ၁။ လူသစ်ဝင်လာလျှင် အလိုအလျောက် ကြိုဆိုသည့်စနစ် (Welcome Message)
 # =========================================================
 @bot.message_handler(content_types=['new_chat_members'])
 def welcome_new_member(message):
     for new_member in message.new_chat_members:
-        # Bot ကိုယ်တိုင် Group ထဲဝင်လာတာဆိုရင် စာမပို့အောင် ကျော်ရန်
+        # Bot ကိုယ်တိုင် Group ထဲဝင်လာတာဆိုရင် ကျော်ရန်
         if new_member.username == BOT_USERNAME:
             continue
             
-        # လူသစ်၏ နာမည်ကို ရယူခြင်း
         first_name = new_member.first_name
-        
-        # မင်းဖြစ်ချင်တဲ့ ကြိုဆိုတဲ့ စာတန်းအလှလေး
         welcome_text = (
             "👋 **မင်္ဂလာပါ ဆရာ {name} ရေ...**\n"
             "**paing Myanmar TTS and SRT** Group ထဲသို့ ဝင်ရောက်လာမှုကို လှိုက်လှိုက်လှဲလှဲ ကြိုဆိုပါတယ်ဗျာ။ ✨\n\n"
             "🎙️ အသံဖန်တီးခြင်းနှင့် SRT စာတန်းထိုး ထုတ်ယူလိုပါက... "
             "**ယခု Group ရဲ့ အပေါ်ဆုံးမှာ Pin တင်ထားတဲ့ အပြာရောင်ကွက်လေး (ခလုတ် Banner) ကို နှိပ်ပြီး** "
-            "လုံုံခြုံစွာ အသုံးပြုနိုင်ပါပြီဗျာ။ 🚀🔥"
+            "လုံခြုံစွာ အသုံးပြုနိုင်ပါပြီဗျာ။ 🚀🔥"
         ).format(name=first_name)
         
-        # Group ထဲသို့ စာလှမ်းပို့ခြင်း
         bot.send_message(message.chat.id, welcome_text, parse_mode="Markdown")
 
 # =========================================================
-# 💬 Start ခလုတ်နှိပ်လျှင် (Private နှင့် Group ခွဲခြားခြင်း)
+# 💬 ၂။ Start ခလုတ်နှိပ်လျှင် (Private Chat တွင် စာပြန်ရန်)
 # =========================================================
 @bot.message_handler(commands=['start'])
 def welcome_message(message):
+    # 🔹 Private Chat (Inbox) ထဲမှာ နှိပ်ခဲ့ရင် စာပြန်မည့်အပိုင်း
     if message.chat.type == 'private':
         inline_markup = types.InlineKeyboardMarkup(row_width=1)
         
@@ -52,6 +49,7 @@ def welcome_message(message):
         welcome_text = "📢 **paing Myanmar TTS and SRT မှ ကြိုဆိုပါတယ်ဗျာ။**\nအောက်ပါခလုတ်များမှတစ်ဆင့် သင်အသုံးပြုလိုသော စနစ်ကို ရွေးချယ်ပါ 👇"
         bot.send_message(message.chat.id, welcome_text, parse_mode="Markdown", reply_markup=inline_markup)
         
+    # 🔹 Group ထဲမှာ /start လာနှိပ်ခဲ့ရင် စာပြန်မည့်အပိုင်း
     else:
         inline_markup = types.InlineKeyboardMarkup()
         btn_go_private = types.InlineKeyboardButton("🔑 ဤနေရာကိုနှိပ်၍ သီးသန့် Password ယူပါ", url=f"https://t.me/{BOT_USERNAME}?start=get_password")
@@ -64,12 +62,16 @@ def welcome_message(message):
         bot.send_message(message.chat.id, group_text, parse_mode="Markdown", reply_markup=inline_markup)
 
 # =========================================================
-# 🎛️ Inline Button (PASSWORD ရယူရန်) ကို နှိပ်ခဲ့လျှင်
+# 🎛️ ၃။ Inline Button (PASSWORD ရယူရန်) - ၁ ကောင့်လျှင် ၁ ခု ပုံသေစနစ်
 # =========================================================
 @bot.callback_query_handler(func=lambda call: call.data == "get_password_now")
 def callback_inline(call):
     user_id = call.message.chat.id
+    
+    # User ID ကို အခြေခံပြီး တစ်သက်လုံး Password ၁ ခုတည်း ပုံသေထွက်စေမည့် Math Logic
+    random.seed(user_id)
     generated_password = random.randint(100000, 999999)
+    random.seed() # Seed ကို မူလအတိုင်း ပြန်ဖျက်ပေးခြင်း
     
     info_text = (
         "🎫 **သင်၏ ဆော့ဖ်ဝဲလ်ဝင်ခွင့် အချက်အလက်များ** 🎫\n\n"
@@ -103,4 +105,3 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-    
